@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 function permissao($id){
     switch ($id) {
         case '1':
@@ -27,12 +26,10 @@ function permissao($id){
 Auth::routes();
 
 Route::get('/', function () {
-    return view('welcome');
+    $permitido = isset(Auth::user()->id) ? permissao(Auth::user()->id) : false;
+    return view('welcome' , compact('permitido'));
 });
 
-Route::get('sistema', function () {
-    $permitido = permissao(Auth::user()->id);
-    return view('sistema', compact('permitido'));
-})->middleware('auth');
+Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
 
 

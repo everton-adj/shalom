@@ -14,9 +14,11 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
     <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    @yield('scriptTop')
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-<body>
+<body id="body">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -55,10 +57,15 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    @if($permitido)
+                                    <a class="dropdown-item" href="{{ route('sistema.index') }}">
+                                        {{ __('Sistema') }}
+                                    </a>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        {{ __('Sair') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -76,5 +83,6 @@
             @yield('content')
         </main>
     </div>
+    @yield('scriptEnd')
 </body>
 </html>
