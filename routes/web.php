@@ -13,26 +13,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+function permissao($id){
+    switch ($id) {
+        case '1':
+            return true;
+        case '2':
+            return true;
+        default:
+            return false;
+    }
+}
+
+Auth::routes();
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/bdcheck', function () {
-    try{
-        $dbh = new pdo( 'mysql:host=pesqueiroshalom.com.br:3306;dbname=u184072781_shalom',
-                        'u184072781_shalom',
-                        'H7#WtwDFw',
-                        array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-        return 'bd ok';
-    }
-    catch(PDOException $ex){
-        return 'falhou->'.$ex;
-    }
-});
-
-Route::get('/sistema', function () {
-    return view('sistema');
+Route::get('sistema', function () {
+    $permitido = permissao(Auth::user()->id);
+    return view('sistema', compact('permitido'));
 })->middleware('auth');
 
-Auth::routes();
 
