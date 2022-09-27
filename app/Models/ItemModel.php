@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ComandaModel extends Model
+class ItemModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'comanda';
+    protected $table = 'itens';
 
     protected $fillable = [
         'id',
         'nome',
-        'item_id',
-        'qtde',
-        'pago'
+        'valor'
     ];
 }

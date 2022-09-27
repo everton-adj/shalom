@@ -13,7 +13,9 @@
             <div class="card container p-3">
                 <form method="post" action="sistema">
                     @csrf
-                    <input id="id" name="id" type="text" class="form-control my-3"/>
+                    <div class="typeahead__container">
+                        <input id="id" name="id" type="text" class="js-typeahead form-control my-3" autocomplete="off"/>
+                    </div>
                 </form>
             </div>
             @if(isset($comanda->id))
@@ -37,5 +39,22 @@
         $('#id').focus();
     });
     setTimeout(()=>{$('#fechar-alerta').click();},3000);
+
+    $.typeahead({
+        input: '.js-typeahead',
+        minLength: 3,
+        maxItem: 10,
+        order: "asc",
+        source: {
+            ajax: {
+                url: "{{route('search')}}"
+            }
+        },
+        callback: {
+            onResult: function (node, query, result, resultCount) {
+                console.log(result);
+            }
+        }
+    });
 </script>
 @endsection
