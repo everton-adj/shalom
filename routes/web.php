@@ -32,6 +32,8 @@ Route::get('/', function () {
 
 Route::resource('sistema', 'App\Http\Controllers\SistemaController')->middleware('auth');
 
+Route::get('cadastro', function () {return 'cadastro';})->name('cadastro');
+
 Route::get('search', 'App\Http\Controllers\SistemaController@search')->middleware('auth')->name('search');
 
 

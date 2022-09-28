@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ComandaModel extends Model
+class CartaoModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'comanda';
+    protected $table = 'cartao';
 
     protected $fillable = [
-        'card_id',
-        'item_id',
-        'qtde',
-        'pago'
+        'id',
+        'code',
+        'nome'
     ];
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ComandaModel;
 use App\Models\ItemModel;
+use App\Models\CartaoModel;
 
 class SistemaController extends Controller
 {
@@ -21,11 +22,11 @@ class SistemaController extends Controller
     }
 
     public function search(Request $request){
-        $lista = array();
-        foreach (ItemModel::get() as $item) {
-            array_push($lista, $item->nome);
+        if(isset($request)){
+            return json_encode(ItemModel::where('nome', 'LIKE', '%'.$request->search.'%')->get()->toArray());
+        }else{
+            return json_encode(ItemModel::get()->toArray());
         }
-        return json_encode($lista);
     }
 
     public function index()
@@ -34,19 +35,58 @@ class SistemaController extends Controller
         return view('sistema', compact('permitido'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return 'create';
+        if(isset($request->code)){
+            if(isset(CartaoModel::where('code',$request->code)->first()->id)){ //verifica se cartao existe
+                $cartao = CartaoModel::where('code',$request->code)->first();
+                if(isset(ItemModel::where('id', $request->item)->first()->id)){ //verifica se item existe
+                    $item = ItemModel::where('id',$request->item)->first();
+                    ComandaModel::create([
+                        "card_id" => $cartao->id,
+                        "item_id" => $item->id,
+                        "qtde" => $request->qtde
+                    ]);
+                    $request->id = $cartao->id;
+                    return $this->store($request);
+                }
+            }
+        }else{
+            return redirect()->back()->with('erroMsg','Codigo não encontrado.');
+        }
     }
 
     public function store(Request $request)
     {
-        if(isset(ComandaModel::find($request->id)->id)){
-            $comanda = ComandaModel::find($request->id);
+        if(isset($request->nome)){ // se tiver nome ja altera
+            CartaoModel::where('id', '=', $request->id)->update(["nome" => $request->nome]);
             $permitido = $this->permissao(Auth::user()->id);
-            return view('sistema', compact('comanda', 'permitido'));
+        }
+        if(isset(CartaoModel::where('code',$request->code)->first()->id)){ //verifica se cartao existe
+            $cartao = CartaoModel::where('code',$request->code)->first();
+            if(isset(ComandaModel::where([['card_id','=',$cartao->id],['pago','=', 0],])->first()->card_id)){ //verifica se existe esse cartao com débito em alguma comanda
+                $comanda = array();
+                foreach(ComandaModel::where([
+                    ['card_id','=',$cartao->id],
+                    ['pago','=', 0],
+                    ])->get() as $item){
+                        array_push($comanda, [
+                            "id" => $cartao->id,
+                            "code" => $cartao->code,
+                            "nome" => $cartao->nome,
+                            "item_id" => $item->item_id,
+                            "item_nome" => ItemModel::where('id',$item->item_id)->first()->nome,
+                            "item_valor" => ItemModel::where('id',$item->item_id)->first()->valor,
+                            "qtde" => $item->qtde
+                        ]);
+                }
+                $permitido = $this->permissao(Auth::user()->id);
+                return view('sistema', compact('comanda', 'permitido'));
+            }else{ // caso o cartao nao esteja vinculado ou ja foi pago
+                return redirect()->back()->with('modal', $cartao->code);
+            }
         }else{
-            return redirect()->back()->with('msg','Não encontrado');
+            return redirect()->back()->with('erroMsg','Não encontrado');
         }
     }
 
