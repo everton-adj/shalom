@@ -10,7 +10,7 @@ use App\Models\CartaoModel;
 
 class SistemaController extends Controller
 {
-    public function permissao($id){
+    public function permissao($id){ // Lista de id's permitidos
         switch ($id) {
             case '1':
                 return true;
@@ -32,7 +32,7 @@ class SistemaController extends Controller
     public function index()
     {
         $permitido = $this->permissao(Auth::user()->id);
-        return view('sistema', compact('permitido'));
+        return view('sistema.index', compact('permitido'));
     }
 
     public function create(Request $request)
@@ -81,9 +81,9 @@ class SistemaController extends Controller
                         ]);
                 }
                 $permitido = $this->permissao(Auth::user()->id);
-                return view('sistema', compact('comanda', 'permitido'));
+                return view('sistema.index', compact('comanda', 'permitido'));
             }else{ // caso o cartao nao esteja vinculado ou ja foi pago
-                return redirect()->back()->with('modal', $cartao->code);
+                return redirect()->back()->with('modal', $cartao->code); // Cria a sessao modal
             }
         }else{
             return redirect()->back()->with('erroMsg','Não encontrado');

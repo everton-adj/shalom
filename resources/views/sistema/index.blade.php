@@ -2,64 +2,8 @@
 
 @section('content')
     @if($permitido)
-        @if(Session::has('modal'))
-            <div class="modal fade" id="modalInit" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form id="modalInitForm" action="{{ route('sistema.create') }}">
-                            <div class="modal-header">
-                                <h1>Comanda vazia</h1>
-                            </div>
-                            <div class="modal-body">
-                                @csrf
-                                <h3>Nome</h3>
-                                <input class="form-control" name="nome" type="text"/>
-                                <h3 class="mt-3">Pedido</h3>
-                                <div class="typeahead__container">
-                                    <input name="code" type="text" class="js-typeahead form-control my-3" autocomplete="off"/>
-                                </div>
-                                <div class="d-none">
-                                    <input id="codeModal" name="code" type="text" value="{{Session::get('modal')}}"/>
-                                    <input id="itemInit" name="item" type="text"/>
-                                    <input id="qtdeInit" name="qtde" type="text"/>
-                                </div>
-
-
-                                <input class="d-none" name="code" type="text" value="{{Session::get('modal')}}"/>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Salvar</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <script>
-                $(document).ready(function() {
-                    $('#modalInit').modal('show');
-                });
-            </script>
-        @endif
-        <div class="modal fade" id="modalNome" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="modalForm" method="post" action="sistema">
-                        <div class="modal-body">
-                            @csrf
-                            Nome
-                            <input class="form-control" id="modalNome" name="nome" type="text"/>
-                            <input class="d-none" id="modalId" name="id" type="text" value="{{isset($comanda[0]['id'])?$comanda[0]['id']:''}}" />
-                            <input class="d-none" id="modalCode" name="code" type="text" value="{{isset($comanda[0]['code'])?$comanda[0]['code']:''}}" />
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Salvar</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        @include('sistema.modal')
+        
         <div class="container">
             @if (Session::has('erroMsg'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -72,7 +16,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" id="fechar-alerta"></button>
                 </div>
             @endif
-            <a href="{{ route('cadastro')}}"class="btn btn-primary my-3">Cadastro</a>
             <h1>Sistema</h1>
             <div class="card container p-3">
                 <form method="post" action="sistema">
@@ -112,11 +55,18 @@
 
 @section('scriptEnd')
 <script>
-    @if(!Session::has('modal'))
-        window.addEventListener('keydown', () => {
+
+    $('#modalInit').on('hide.bs.modal', function (event) {
+        location.reload();
+    });
+
+    window.addEventListener('keydown', () => {
+        @if(Session::has('modal'))
+            $('#nome').focus();
+        @else
             $('#code').focus();
-        });
-    @endif
+        @endif
+    });
     setTimeout(()=>{$('#fechar-alerta').click();},3000);
     $.typeahead({
         input: '.js-typeahead',
