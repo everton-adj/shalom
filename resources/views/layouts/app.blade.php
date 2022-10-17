@@ -68,6 +68,9 @@
                                     <a class="dropdown-item" href="{{ route('sistema.index') }}">
                                         {{ __('Sistema') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('cadastro') }}">
+                                        {{ __('Cadastro') }}
+                                    </a>
                                     @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
