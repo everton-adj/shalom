@@ -1,4 +1,4 @@
-@if(Session::has('modal'))
+@if (Session::has('modal'))
     <div class="modal fade" id="modalInit" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -9,8 +9,9 @@
                     <div class="modal-body">
                         @csrf
                         <h3>Nome</h3>
-                        <input class="form-control" id="nome" name="nome" type="text"/>
-                        <input class="d-none" id="codeModal" name="code" type="text" value="{{Session::get('modal')}}"/>
+                        <input class="form-control" id="nome" name="nome" type="text" />
+                        <input class="d-none" id="card_id" name="card_id" type="text"
+                            value="{{ Session::get('modal') }}" />
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success">Salvar</button>
@@ -27,7 +28,7 @@
     </script>
 @endif
 
-{{-- Modal de Alteração de --}}
+{{-- Modal de Alteração --}}
 <div class="modal fade" id="modalNome" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -35,9 +36,11 @@
                 <div class="modal-body">
                     @csrf
                     Nome
-                    <input class="form-control" id="modalNome" name="nome" type="text"/>
-                    <input class="d-none" id="modalId" name="id" type="text" value="{{isset($comanda[0]['id'])?$comanda[0]['id']:''}}" />
-                    <input class="d-none" id="modalCode" name="code" type="text" value="{{isset($comanda[0]['code'])?$comanda[0]['code']:''}}" />
+                    <input class="form-control" id="modalNome" name="nome" type="text" />
+                    <input class="d-none" id="modalId" name="id" type="text"
+                        value="{{ isset($comanda[0]['id']) ? $comanda[0]['id'] : '' }}" />
+                    <input class="d-none" id="modalCode" name="code" type="text"
+                        value="{{ isset($comanda[0]['code']) ? $comanda[0]['code'] : '' }}" />
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Salvar</button>
